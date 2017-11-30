@@ -146,3 +146,5 @@ ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_Numero_Command
 ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
 ALTER TABLE contient ADD CONSTRAINT FK_contient_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
 ALTER TABLE contient ADD CONSTRAINT FK_contient_Mot_Cle FOREIGN KEY (Mot_Cle) REFERENCES MotCle(Mot_Cle);
+
+CREATE USER 'visiteur'@'visiteur2' IDENTIFIED BY '***';GRANT ALL PRIVILEGES ON *.* TO 'visiteur'@'visiteur2' IDENTIFIED BY '***' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;GRANT ALL PRIVILEGES ON `sebo`.* TO 'visiteur'@'visiteur2';
