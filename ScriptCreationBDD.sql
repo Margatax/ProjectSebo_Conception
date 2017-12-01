@@ -1,7 +1,7 @@
 #------------------------------------------------------------
 #        Script MySQL.
 #------------------------------------------------------------
-CREATE DATABASE sebo;
+
 
 #------------------------------------------------------------
 # Table: Categorie
@@ -42,7 +42,7 @@ CREATE TABLE Article(
         Quantite_Reappro Int NOT NULL ,
         Genre            Varchar (25) NOT NULL ,
         Editeur          Varchar (25) NOT NULL ,
-        Auteur           Varchar (100) NOT NULL ,
+        id_auteur        Int ,
         PRIMARY KEY (Reference )
 )ENGINE=InnoDB;
 
@@ -81,7 +81,6 @@ CREATE TABLE Commande(
 
 CREATE TABLE Client(
         Identifiant Varchar (25) NOT NULL ,
-        Mot_Passe   Varchar (25) NOT NULL ,
         Prenom      Varchar (25) NOT NULL ,
         Nom         Varchar (50) NOT NULL ,
         Adresse     Varchar (25) NOT NULL ,
@@ -106,10 +105,10 @@ CREATE TABLE Editeur(
 #------------------------------------------------------------
 
 CREATE TABLE Auteur(
-        Prenom Varchar (25) NOT NULL ,
-        Nom    Varchar (50) NOT NULL ,
-        Auteur Varchar (100) NOT NULL ,
-        PRIMARY KEY (Auteur )
+        Prenom    Varchar (25) NOT NULL ,
+        Nom       Varchar (50) NOT NULL ,
+        id_auteur int (11) Auto_increment  NOT NULL ,
+        PRIMARY KEY (id_auteur )
 )ENGINE=InnoDB;
 
 
@@ -128,10 +127,10 @@ CREATE TABLE Ligne_de_commande(
 
 
 #------------------------------------------------------------
-# Table: contient
+# Table: caracterise
 #------------------------------------------------------------
 
-CREATE TABLE contient(
+CREATE TABLE caracterise(
         Reference Varchar (25) NOT NULL ,
         Mot_Cle   Varchar (25) NOT NULL ,
         PRIMARY KEY (Reference ,Mot_Cle )
@@ -140,11 +139,9 @@ CREATE TABLE contient(
 ALTER TABLE Genre ADD CONSTRAINT FK_Genre_Categorie FOREIGN KEY (Categorie) REFERENCES Categorie(Categorie);
 ALTER TABLE Article ADD CONSTRAINT FK_Article_Genre FOREIGN KEY (Genre) REFERENCES Genre(Genre);
 ALTER TABLE Article ADD CONSTRAINT FK_Article_Editeur FOREIGN KEY (Editeur) REFERENCES Editeur(Editeur);
-ALTER TABLE Article ADD CONSTRAINT FK_Article_Auteur FOREIGN KEY (Auteur) REFERENCES Auteur(Auteur);
+ALTER TABLE Article ADD CONSTRAINT FK_Article_id_auteur FOREIGN KEY (id_auteur) REFERENCES Auteur(id_auteur);
 ALTER TABLE Commande ADD CONSTRAINT FK_Commande_Identifiant FOREIGN KEY (Identifiant) REFERENCES Client(Identifiant);
 ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_Numero_Commande FOREIGN KEY (Numero_Commande) REFERENCES Commande(Numero_Commande);
 ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
-ALTER TABLE contient ADD CONSTRAINT FK_contient_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
-ALTER TABLE contient ADD CONSTRAINT FK_contient_Mot_Cle FOREIGN KEY (Mot_Cle) REFERENCES MotCle(Mot_Cle);
-
-CREATE USER 'visiteur2'@'' IDENTIFIED BY PASSWORD '*C5821E3BB76F0C9E408A55F8F540171D43931CB4'; GRANT USAGE ON *.* TO 'visiteur2'@'' IDENTIFIED BY PASSWORD '*C5821E3BB76F0C9E408A55F8F540171D43931CB4'; GRANT ALL PRIVILEGES ON `sebo`.* TO 'visiteur2'@''; 
+ALTER TABLE caracterise ADD CONSTRAINT FK_caracterise_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
+ALTER TABLE caracterise ADD CONSTRAINT FK_caracterise_Mot_Cle FOREIGN KEY (Mot_Cle) REFERENCES MotCle(Mot_Cle);
