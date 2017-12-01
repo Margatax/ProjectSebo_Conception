@@ -29,6 +29,7 @@ CREATE TABLE Genre(
 #------------------------------------------------------------
 
 CREATE TABLE Article(
+        id_article       int (11) Auto_increment  NOT NULL ,
         Reference        Varchar (25) NOT NULL ,
         Titre            Varchar (100) NOT NULL ,
         Prix             DECIMAL (15,3)  NOT NULL ,
@@ -43,7 +44,7 @@ CREATE TABLE Article(
         Genre            Varchar (25) NOT NULL ,
         Editeur          Varchar (25) NOT NULL ,
         id_auteur        Int ,
-        PRIMARY KEY (Reference )
+        PRIMARY KEY (id_article )
 )ENGINE=InnoDB;
 
 
@@ -83,6 +84,7 @@ CREATE TABLE Client(
         Identifiant Varchar (25) NOT NULL ,
         Prenom      Varchar (25) NOT NULL ,
         Nom         Varchar (50) NOT NULL ,
+        email       Varchar (50) ,
         Adresse     Varchar (25) NOT NULL ,
         CP          Int NOT NULL ,
         Ville       Varchar (50) NOT NULL ,
@@ -121,8 +123,8 @@ CREATE TABLE Ligne_de_commande(
         Prix_unitaire    DECIMAL (15,3)  NOT NULL ,
         QuantiteCommande Int NOT NULL ,
         Numero_Commande  Varchar (25) NOT NULL ,
-        Reference        Varchar (25) NOT NULL ,
-        PRIMARY KEY (Numero_Commande ,Reference )
+        id_article       Int NOT NULL ,
+        PRIMARY KEY (Numero_Commande ,id_article )
 )ENGINE=InnoDB;
 
 
@@ -131,9 +133,9 @@ CREATE TABLE Ligne_de_commande(
 #------------------------------------------------------------
 
 CREATE TABLE caracterise(
-        Reference Varchar (25) NOT NULL ,
-        Mot_Cle   Varchar (25) NOT NULL ,
-        PRIMARY KEY (Reference ,Mot_Cle )
+        id_article Int NOT NULL ,
+        Mot_Cle    Varchar (25) NOT NULL ,
+        PRIMARY KEY (id_article ,Mot_Cle )
 )ENGINE=InnoDB;
 
 ALTER TABLE Genre ADD CONSTRAINT FK_Genre_Categorie FOREIGN KEY (Categorie) REFERENCES Categorie(Categorie);
@@ -142,6 +144,6 @@ ALTER TABLE Article ADD CONSTRAINT FK_Article_Editeur FOREIGN KEY (Editeur) REFE
 ALTER TABLE Article ADD CONSTRAINT FK_Article_id_auteur FOREIGN KEY (id_auteur) REFERENCES Auteur(id_auteur);
 ALTER TABLE Commande ADD CONSTRAINT FK_Commande_Identifiant FOREIGN KEY (Identifiant) REFERENCES Client(Identifiant);
 ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_Numero_Commande FOREIGN KEY (Numero_Commande) REFERENCES Commande(Numero_Commande);
-ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
-ALTER TABLE caracterise ADD CONSTRAINT FK_caracterise_Reference FOREIGN KEY (Reference) REFERENCES Article(Reference);
+ALTER TABLE Ligne_de_commande ADD CONSTRAINT FK_Ligne_de_commande_id_article FOREIGN KEY (id_article) REFERENCES Article(id_article);
+ALTER TABLE caracterise ADD CONSTRAINT FK_caracterise_id_article FOREIGN KEY (id_article) REFERENCES Article(id_article);
 ALTER TABLE caracterise ADD CONSTRAINT FK_caracterise_Mot_Cle FOREIGN KEY (Mot_Cle) REFERENCES MotCle(Mot_Cle);
