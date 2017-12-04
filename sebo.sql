@@ -1,26 +1,26 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.14
--- http://www.phpmyadmin.net
+-- version 4.7.4
+-- https://www.phpmyadmin.net/
 --
--- Client :  127.0.0.1
--- Généré le :  Lun 04 Décembre 2017 à 13:33
--- Version du serveur :  5.6.17
--- Version de PHP :  5.5.12
+-- Hôte : 127.0.0.1:3306
+-- Généré le :  lun. 04 déc. 2017 à 15:25
+-- Version du serveur :  5.7.20
+-- Version de PHP :  5.6.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données :  `sebo`
 --
-CREATE DATABASE IF NOT EXISTS `sebo` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `sebo`;
 
 -- --------------------------------------------------------
 
@@ -36,11 +36,11 @@ CREATE TABLE IF NOT EXISTS `article` (
   `Prix` decimal(15,3) NOT NULL,
   `Reappro_Possible` tinyint(1) NOT NULL,
   `TVA` float NOT NULL,
-  `Prix_Promo` decimal(15,3) NOT NULL,
-  `Debut_Promo` date NOT NULL,
-  `Fin_promo` date NOT NULL,
+  `Prix_Promo` decimal(15,3) DEFAULT NULL,
+  `Debut_Promo` date DEFAULT NULL,
+  `Fin_promo` date DEFAULT NULL,
   `Seuil` int(11) NOT NULL,
-  `Quantite` int(11) NOT NULL,
+  `Quantite` int(11) DEFAULT NULL,
   `Quantite_Reappro` int(11) NOT NULL,
   `Genre` varchar(25) NOT NULL,
   `Editeur` varchar(25) NOT NULL,
@@ -49,18 +49,19 @@ CREATE TABLE IF NOT EXISTS `article` (
   KEY `FK_Article_Genre` (`Genre`),
   KEY `FK_Article_Editeur` (`Editeur`),
   KEY `FK_Article_id_auteur` (`id_auteur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `article`
+-- Déchargement des données de la table `article`
 --
 
 INSERT INTO `article` (`id_article`, `Reference`, `Titre`, `Prix`, `Reappro_Possible`, `TVA`, `Prix_Promo`, `Debut_Promo`, `Fin_promo`, `Seuil`, `Quantite`, `Quantite_Reappro`, `Genre`, `Editeur`, `id_auteur`) VALUES
 (1, 'orel2017', 'La fête est finie', '15.000', 1, 20, '13.000', '2017-12-12', '2017-12-30', 10, 1000, 100, 'Rap', 'Polygram', 3),
-(2, 'bachjs001', 'The very best of', '13.000', 1, 20, '12.000', '2017-12-26', '2017-12-31', 5, 100, 100, 'Classique', 'Fuckin''Rock', 5),
-(3, 'vuillard2017', 'L''ordre du jour', '24.000', 1, 20, '20.000', '2017-12-21', '2017-12-28', 10, 1000, 120, 'roman policier', 'Hachette', 8),
+(2, 'bachjs001', 'The very best of', '13.000', 1, 20, '12.000', '2017-12-26', '2017-12-31', 5, 100, 100, 'Classique', 'Fuckin\'Rock', 5),
+(3, 'vuillard2017', 'L\'ordre du jour', '24.000', 1, 20, '20.000', '2017-12-21', '2017-12-28', 10, 1000, 120, 'roman policier', 'Hachette', 8),
 (4, 'asimov1950', 'Fondation', '10.000', 0, 20, '8.000', '2017-12-14', '2018-01-25', 10, 150, 0, 'roman science-fiction', 'génération SYFY', 2),
-(5, 'tolk003', 'Le seigneur des anneaux', '25.000', 1, 20, '22.000', '2017-12-27', '2017-12-31', 10, 1553, 120, 'roman fantastique', 'génération SYFY', 1);
+(5, 'tolk003', 'Le seigneur des anneaux', '25.000', 1, 20, '22.000', '2017-12-27', '2017-12-31', 10, 1553, 120, 'roman fantastique', 'génération SYFY', 1),
+(6, 'HP01', 'Harry Potter à l\'école des sorciers', '19.990', 1, 20, NULL, NULL, NULL, 20, 50, 0, 'roman fantastique', 'Folio', 9);
 
 -- --------------------------------------------------------
 
@@ -70,14 +71,14 @@ INSERT INTO `article` (`id_article`, `Reference`, `Titre`, `Prix`, `Reappro_Poss
 
 DROP TABLE IF EXISTS `auteur`;
 CREATE TABLE IF NOT EXISTS `auteur` (
-  `Prenom` varchar(25) NOT NULL,
+  `Prenom` varchar(25) DEFAULT NULL,
   `Nom` varchar(50) NOT NULL,
   `id_auteur` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id_auteur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `auteur`
+-- Déchargement des données de la table `auteur`
 --
 
 INSERT INTO `auteur` (`Prenom`, `Nom`, `id_auteur`) VALUES
@@ -88,7 +89,8 @@ INSERT INTO `auteur` (`Prenom`, `Nom`, `id_auteur`) VALUES
 ('Jean-Sébastien', 'Bach', 5),
 ('Terry', 'Goodkind', 6),
 ('Dr dre', 'Dr dre', 7),
-('Eric', 'Vuillard', 8);
+('Eric', 'Vuillard', 8),
+('J.K', 'Rowling', 9);
 
 -- --------------------------------------------------------
 
@@ -102,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `auth_group` (
   `name` varchar(80) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -118,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`),
   KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -134,10 +136,10 @@ CREATE TABLE IF NOT EXISTS `auth_permission` (
   `codename` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `auth_permission`
+-- Déchargement des données de la table `auth_permission`
 --
 
 INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALUES
@@ -214,10 +216,10 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `auth_user`
+-- Déchargement des données de la table `auth_user`
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
@@ -238,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `auth_user_groups` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_user_groups_user_id_group_id_94350c0c_uniq` (`user_id`,`group_id`),
   KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -254,10 +256,10 @@ CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_user_user_permissions_user_id_permission_id_14a6b632_uniq` (`user_id`,`permission_id`),
   KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `auth_user_user_permissions`
+-- Déchargement des données de la table `auth_user_user_permissions`
 --
 
 INSERT INTO `auth_user_user_permissions` (`id`, `user_id`, `permission_id`) VALUES
@@ -328,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `caracterise` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `caracterise`
+-- Déchargement des données de la table `caracterise`
 --
 
 INSERT INTO `caracterise` (`id_article`, `Mot_Cle`) VALUES
@@ -351,7 +353,7 @@ CREATE TABLE IF NOT EXISTS `categorie` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `categorie`
+-- Déchargement des données de la table `categorie`
 --
 
 INSERT INTO `categorie` (`Categorie`) VALUES
@@ -379,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `client` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `client`
+-- Déchargement des données de la table `client`
 --
 
 INSERT INTO `client` (`Identifiant`, `Prenom`, `Nom`, `email`, `Adresse`, `CP`, `Ville`) VALUES
@@ -403,10 +405,10 @@ INSERT INTO `client` (`Identifiant`, `Prenom`, `Nom`, `email`, `Adresse`, `CP`, 
 DROP TABLE IF EXISTS `commande`;
 CREATE TABLE IF NOT EXISTS `commande` (
   `Numero_Commande` varchar(25) NOT NULL,
-  `Autorisation_payement` tinyint(1) NOT NULL,
-  `Numero_Autorisation` varchar(25) NOT NULL,
-  `Date_autorisation` date NOT NULL,
-  `Numero_livraison` varchar(25) NOT NULL,
+  `Autorisation_payement` tinyint(1) DEFAULT NULL,
+  `Numero_Autorisation` varchar(25) DEFAULT NULL,
+  `Date_autorisation` date DEFAULT NULL,
+  `Numero_livraison` varchar(25) DEFAULT NULL,
   `Date_commande` date NOT NULL,
   `Livre` tinyint(1) NOT NULL,
   `Etat_Commande` varchar(25) NOT NULL,
@@ -416,23 +418,32 @@ CREATE TABLE IF NOT EXISTS `commande` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `commande`
+-- Déchargement des données de la table `commande`
 --
 
 INSERT INTO `commande` (`Numero_Commande`, `Autorisation_payement`, `Numero_Autorisation`, `Date_autorisation`, `Numero_livraison`, `Date_commande`, `Livre`, `Etat_Commande`, `Identifiant`) VALUES
-('94', 0, '', '0000-00-00', '', '2017-12-19', 0, 'PANIER', 'neque.');
+('4687', 1, '635', '2017-12-14', '5254234', '2017-12-14', 1, 'LIVREE', 'Mauris'),
+('54', 1, '3', '2017-12-06', NULL, '2017-12-06', 0, 'PAYEE', 'neque.'),
+('94', 0, '54F9867', '2017-12-19', '', '2017-12-19', 0, 'REFUSEE', 'neque.');
 
 --
 -- Déclencheurs `commande`
 --
 DROP TRIGGER IF EXISTS `commande_before_insert`;
-DELIMITER //
-CREATE TRIGGER `commande_before_insert` BEFORE INSERT ON `commande`
- FOR EACH ROW IF NEW.Etat_Commande <> 'PANIER'
+DELIMITER $$
+CREATE TRIGGER `commande_before_insert` BEFORE INSERT ON `commande` FOR EACH ROW IF NEW.Etat_Commande <> 'PANIER'
 THEN
 	SIGNAL SQLSTATE '45000';
 END IF
-//
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `commande_before_update`;
+DELIMITER $$
+CREATE TRIGGER `commande_before_update` BEFORE UPDATE ON `commande` FOR EACH ROW IF NEW.Etat_Commande <> 'PANIER' AND NEW.Etat_Commande <> 'PAYEE' AND NEW.Etat_Commande <> 'REFUSEE' AND NEW.Etat_Commande <> 'ATTENTE' AND NEW.Etat_Commande <> 'PREPARATION' AND NEW.Etat_Commande <> 'LIVRAISON' AND NEW.Etat_Commande <> 'LIVREE' AND NEW.Etat_Commande <> 'ANNULEE' AND NEW.Etat_Commande <> 'PARTIELLE'
+THEN
+    SIGNAL SQLSTATE '45000';
+END IF
+$$
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -447,25 +458,25 @@ CREATE TABLE IF NOT EXISTS `django_admin_log` (
   `action_time` datetime(6) NOT NULL,
   `object_id` longtext,
   `object_repr` varchar(200) NOT NULL,
-  `action_flag` smallint(5) unsigned NOT NULL,
+  `action_flag` smallint(5) UNSIGNED NOT NULL,
   `change_message` longtext NOT NULL,
   `content_type_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`),
   KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `django_admin_log`
+-- Déchargement des données de la table `django_admin_log`
 --
 
 INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
-(1, '2017-12-04 09:24:01.112223', '2', 'gilles', 1, '[{"added": {}}]', 4, 1),
-(2, '2017-12-04 09:24:59.570803', '2', 'gilles', 2, '[{"changed": {"fields": ["first_name", "last_name", "email", "is_staff", "is_superuser", "user_permissions"]}}]', 4, 1),
-(3, '2017-12-04 10:10:31.287965', '7', 'Dr dre', 2, '[{"changed": {"fields": ["nom"]}}]', 7, 1),
-(4, '2017-12-04 10:10:57.159483', '4', 'Booba', 2, '[{"changed": {"fields": ["nom"]}}]', 7, 1),
-(5, '2017-12-04 10:11:10.639153', '3', 'Orelsan', 2, '[{"changed": {"fields": ["nom"]}}]', 7, 1);
+(1, '2017-12-04 09:24:01.112223', '2', 'gilles', 1, '[{\"added\": {}}]', 4, 1),
+(2, '2017-12-04 09:24:59.570803', '2', 'gilles', 2, '[{\"changed\": {\"fields\": [\"first_name\", \"last_name\", \"email\", \"is_staff\", \"is_superuser\", \"user_permissions\"]}}]', 4, 1),
+(3, '2017-12-04 10:10:31.287965', '7', 'Dr dre', 2, '[{\"changed\": {\"fields\": [\"nom\"]}}]', 7, 1),
+(4, '2017-12-04 10:10:57.159483', '4', 'Booba', 2, '[{\"changed\": {\"fields\": [\"nom\"]}}]', 7, 1),
+(5, '2017-12-04 10:11:10.639153', '3', 'Orelsan', 2, '[{\"changed\": {\"fields\": [\"nom\"]}}]', 7, 1);
 
 -- --------------------------------------------------------
 
@@ -480,10 +491,10 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `django_content_type`
+-- Déchargement des données de la table `django_content_type`
 --
 
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
@@ -518,10 +529,10 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `django_migrations`
+-- Déchargement des données de la table `django_migrations`
 --
 
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
@@ -556,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `django_session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `django_session`
+-- Déchargement des données de la table `django_session`
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
@@ -575,12 +586,12 @@ CREATE TABLE IF NOT EXISTS `editeur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `editeur`
+-- Déchargement des données de la table `editeur`
 --
 
 INSERT INTO `editeur` (`Editeur`) VALUES
 ('Folio'),
-('Fuckin''Rock'),
+('Fuckin\'Rock'),
 ('génération SYFY'),
 ('Hachette'),
 ('Polygram'),
@@ -602,7 +613,7 @@ CREATE TABLE IF NOT EXISTS `genre` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `genre`
+-- Déchargement des données de la table `genre`
 --
 
 INSERT INTO `genre` (`Genre`, `Categorie`) VALUES
@@ -633,6 +644,16 @@ CREATE TABLE IF NOT EXISTS `ligne_de_commande` (
   KEY `FK_Ligne_de_commande_id_article` (`id_article`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `ligne_de_commande`
+--
+
+INSERT INTO `ligne_de_commande` (`Quantite_livre`, `Prix_unitaire`, `QuantiteCommande`, `Numero_Commande`, `id_article`) VALUES
+(1, '20.000', 1, '4687', 3),
+(1, '19.990', 1, '4687', 6),
+(0, '12.000', 3, '54', 2),
+(0, '13.000', 2, '94', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -646,7 +667,7 @@ CREATE TABLE IF NOT EXISTS `motcle` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Contenu de la table `motcle`
+-- Déchargement des données de la table `motcle`
 --
 
 INSERT INTO `motcle` (`Mot_Cle`) VALUES
@@ -654,7 +675,7 @@ INSERT INTO `motcle` (`Mot_Cle`) VALUES
 ('Musique');
 
 --
--- Contraintes pour les tables exportées
+-- Contraintes pour les tables déchargées
 --
 
 --
@@ -669,8 +690,8 @@ ALTER TABLE `article`
 -- Contraintes pour la table `auth_group_permissions`
 --
 ALTER TABLE `auth_group_permissions`
-  ADD CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
-  ADD CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`);
+  ADD CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  ADD CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`);
 
 --
 -- Contraintes pour la table `auth_permission`
@@ -689,15 +710,15 @@ ALTER TABLE `auth_user_groups`
 -- Contraintes pour la table `auth_user_user_permissions`
 --
 ALTER TABLE `auth_user_user_permissions`
-  ADD CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  ADD CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`);
+  ADD CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  ADD CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
 -- Contraintes pour la table `caracterise`
 --
 ALTER TABLE `caracterise`
-  ADD CONSTRAINT `FK_caracterise_id_article` FOREIGN KEY (`id_article`) REFERENCES `article` (`id_article`),
-  ADD CONSTRAINT `FK_caracterise_Mot_Cle` FOREIGN KEY (`Mot_Cle`) REFERENCES `motcle` (`Mot_Cle`);
+  ADD CONSTRAINT `FK_caracterise_Mot_Cle` FOREIGN KEY (`Mot_Cle`) REFERENCES `motcle` (`Mot_Cle`),
+  ADD CONSTRAINT `FK_caracterise_id_article` FOREIGN KEY (`id_article`) REFERENCES `article` (`id_article`);
 
 --
 -- Contraintes pour la table `commande`
@@ -722,8 +743,9 @@ ALTER TABLE `genre`
 -- Contraintes pour la table `ligne_de_commande`
 --
 ALTER TABLE `ligne_de_commande`
-  ADD CONSTRAINT `FK_Ligne_de_commande_id_article` FOREIGN KEY (`id_article`) REFERENCES `article` (`id_article`),
-  ADD CONSTRAINT `FK_Ligne_de_commande_Numero_Commande` FOREIGN KEY (`Numero_Commande`) REFERENCES `commande` (`Numero_Commande`);
+  ADD CONSTRAINT `FK_Ligne_de_commande_Numero_Commande` FOREIGN KEY (`Numero_Commande`) REFERENCES `commande` (`Numero_Commande`),
+  ADD CONSTRAINT `FK_Ligne_de_commande_id_article` FOREIGN KEY (`id_article`) REFERENCES `article` (`id_article`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
