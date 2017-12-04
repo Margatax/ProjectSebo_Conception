@@ -1,0 +1,29 @@
+DELIMITER //
+
+CREATE TRIGGER commande_pre_insert
+BEFORE INSERT
+ON commande FOR EACH ROW
+
+BEGIN
+
+CHECK (Etat_commande='PANIER');
+
+END;//
+
+DELIMITER;
+
+DELIMITER //
+
+CREATE TRIGGER commande_pre_update
+BEFORE UPDATE
+ON commande FOR EACH ROW
+
+BEGIN
+
+CHECK (Etat_commande='PANIER'OR Etat_commande='PAYEE' OR Etat_commande='REFUSEE' OR Etat_commande='ATTENTE' OR 
+       Etat_commande ='PREPARATION' OR Etat_commande='LIVRAISON' OR Etat_commande='LIVREE' OR Etat_commande='ANNULEE' 
+       OR Etat_commande='PARTIELLE');
+
+END;//
+
+DELIMITER;
