@@ -1,0 +1,14 @@
+Use `testsebo1`;
+
+DROP TABLE `caracterise`;
+DROP TABLE `ligne_de_commande`;
+DROP TABLE `article`;
+DROP TABLE `auteur`;
+DROP TABLE `editeur`;
+DROP TABLE `motcle`;
+DROP TABLE `genre`;
+DROP TABLE `categorie`;
+DROP TABLE  `commande`;
+DROP TABLE  `client`;
+
+DROP DATABASE `testsebo1`;
