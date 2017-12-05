@@ -1,0 +1,15 @@
+Use `testsebo1`;
+
+DELETE FROM `caracterise`;
+DELETE FROM `article`;
+DELETE FROM `ligne_de_commande`;
+DELETE FROM `auteur`;
+DELETE FROM `editeur`;
+DELETE FROM `motcle`;
+DELETE FROM `genre`;
+DELETE FROM `categorie`;
+DELETE FROM `commande`;
+DELETE FROM `client`;
+
+
+

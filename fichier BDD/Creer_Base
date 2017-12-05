@@ -1,0 +1,139 @@
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+CREATE DATABASE IF NOT EXISTS `testSebo1` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+Use `testSebo1`;
+
+CREATE TABLE IF NOT EXISTS `client` (
+  `Identifiant` varchar(25) NOT NULL,
+  `Prenom` varchar(25) NOT NULL,
+  `Nom` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `Adresse` varchar(50) NOT NULL,
+  `CP` int(11) NOT NULL,
+  `Ville` varchar(50) NOT NULL,
+  PRIMARY KEY (`Identifiant`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `commande` (
+  `Numero_Commande` varchar(25) NOT NULL,
+  `Autorisation_paiement` tinyint(1) DEFAULT NULL,
+  `Numero_Autorisation` varchar(25) DEFAULT NULL,
+  `Date_autorisation` date DEFAULT NULL,
+  `Numero_livraison` varchar(25) DEFAULT NULL,
+  `Date_commande` date NOT NULL,
+  `Livre` tinyint(1) DEFAULT 1,
+  `Etat_Commande` varchar(25) DEFAULT 'PANIER',
+  `Identifiant` varchar(25) NOT NULL,
+  PRIMARY KEY (`Numero_Commande`),
+  KEY `FK_Commande_Identifiant` (`Identifiant`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DELIMITER $$
+CREATE TRIGGER `commande_before_insert` BEFORE INSERT ON `commande` FOR EACH ROW IF NEW.Etat_Commande <> 'PANIER'
+THEN
+	SIGNAL SQLSTATE '45000';
+END IF
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER `commande_before_update` BEFORE UPDATE ON `commande` FOR EACH ROW IF NEW.Etat_Commande <> 'PANIER' AND NEW.Etat_Commande <> 'PAYEE' AND NEW.Etat_Commande <> 'REFUSEE' AND NEW.Etat_Commande <> 'ATTENTE' AND NEW.Etat_Commande <> 'PREPARATION' AND NEW.Etat_Commande <> 'LIVRAISON' AND NEW.Etat_Commande <> 'LIVREE' AND NEW.Etat_Commande <> 'ANNULEE' AND NEW.Etat_Commande <> 'PARTIELLE'
+THEN
+    SIGNAL SQLSTATE '45000';
+END IF
+$$
+DELIMITER ;
+
+ALTER TABLE `commande`
+  ADD CONSTRAINT `FK_Commande_Identifiant` FOREIGN KEY (`Identifiant`) REFERENCES `client` (`Identifiant`);
+
+CREATE TABLE IF NOT EXISTS `categorie` (
+  `Categorie` varchar(25) NOT NULL,
+  PRIMARY KEY (`Categorie`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `genre` (
+  `Genre` varchar(25) NOT NULL,
+  `Categorie` varchar(25) NOT NULL,
+  PRIMARY KEY (`Genre`),
+  KEY `FK_Genre_Categorie` (`Categorie`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `genre`
+  ADD CONSTRAINT `FK_Genre_Categorie` FOREIGN KEY (`Categorie`) REFERENCES `categorie` (`Categorie`);
+
+CREATE TABLE IF NOT EXISTS `motcle` (
+  `Mot_Cle` varchar(25) NOT NULL,
+  PRIMARY KEY (`Mot_Cle`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `editeur` (
+  `Editeur` varchar(25) NOT NULL,
+  PRIMARY KEY (`Editeur`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `auteur` (
+  `Prenom` varchar(25) DEFAULT NULL,
+  `Nom` varchar(50) NOT NULL,
+  `id_auteur` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_auteur`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `article` (
+  `id_article` int(11) NOT NULL AUTO_INCREMENT,
+  `Reference` varchar(25) NOT NULL,
+  `Titre` varchar(100) NOT NULL,
+  `Prix` decimal(15,3) NOT NULL,
+  `Reappro_Possible` tinyint(1) NOT NULL,
+  `TVA` float NOT NULL,
+  `Prix_Promo` decimal(15,3) DEFAULT NULL,
+  `Debut_Promo` date DEFAULT NULL,
+  `Fin_promo` date DEFAULT NULL,
+  `Seuil` int(11) NOT NULL,
+  `Quantite` int(11) DEFAULT NULL,
+  `Quantite_Reappro` int(11) NOT NULL,
+  `Genre` varchar(25) NOT NULL,
+  `Editeur` varchar(25) NOT NULL,
+  `id_auteur` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_article`),
+  KEY `FK_Article_Genre` (`Genre`),
+  KEY `FK_Article_Editeur` (`Editeur`),
+  KEY `FK_Article_id_auteur` (`id_auteur`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `article`
+  ADD CONSTRAINT `FK_Article_Editeur` FOREIGN KEY (`Editeur`) REFERENCES `editeur` (`Editeur`),
+  ADD CONSTRAINT `FK_Article_Genre` FOREIGN KEY (`Genre`) REFERENCES `genre` (`Genre`),
+  ADD CONSTRAINT `FK_Article_id_auteur` FOREIGN KEY (`id_auteur`) REFERENCES `auteur` (`id_auteur`);
+
+CREATE TABLE IF NOT EXISTS `ligne_de_commande` (
+  `Quantite_livre` int(11) NOT NULL,
+  `Prix_unitaire` decimal(15,3) NOT NULL,
+  `QuantiteCommande` int(11) NOT NULL,
+  `Numero_Commande` varchar(25) NOT NULL,
+  `id_article` int(11) NOT NULL,
+  PRIMARY KEY (`Numero_Commande`,`id_article`),
+  KEY `FK_Ligne_de_commande_id_article` (`id_article`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ligne_de_commande`
+  ADD CONSTRAINT `FK_Ligne_de_commande_Numero_Commande` FOREIGN KEY (`Numero_Commande`) REFERENCES `commande` (`Numero_Commande`),
+  ADD CONSTRAINT `FK_Ligne_de_commande_id_article` FOREIGN KEY (`id_article`) REFERENCES `article` (`id_article`);
+
+CREATE TABLE IF NOT EXISTS `caracterise` (
+  `id_article` int(11) NOT NULL,
+  `Mot_Cle` varchar(25) NOT NULL,
+  PRIMARY KEY (`id_article`,`Mot_Cle`),
+  KEY `FK_caracterise_Mot_Cle` (`Mot_Cle`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `caracterise`
+  ADD CONSTRAINT `FK_caracterise_Mot_Cle` FOREIGN KEY (`Mot_Cle`) REFERENCES `motcle` (`Mot_Cle`),
+  ADD CONSTRAINT `FK_caracterise_id_article` FOREIGN KEY (`id_article`) REFERENCES `article` (`id_article`);
+
+COMMIT;
