@@ -17,10 +17,10 @@ INSERT INTO `client` (`Identifiant`, `Prenom`, `Nom`, `email`, `Adresse`, `CP`, 
 ('Margatax', 'Charles', 'Damien', 'contactpro.dcharles@gmail.com', '260 avenue General de Gaulle', 69500, 'Bron');
 
 
-INSERT INTO `commande` (`Numero_Commande`, `Autorisation_payement`, `Numero_Autorisation`, `Date_autorisation`, `Numero_livraison`, `Date_commande`, `Livre`, `Etat_Commande`, `Identifiant`) VALUES
-('4687', NULL , '635', '2017-12-14',NULL , NULL, 0, 'PANIER', 'Mauris'),
-('54', NULL , '3', '2017-12-06', NULL, '2017-12-06', 0, 'PAYEE', 'neque.'),
-('94',NULL, '54F9867', '2017-12-19', '', '2017-12-19', 0, 'REFUSEE', 'neque.');
+INSERT INTO `commande` (`Numero_Commande`, `Autorisation_paiement`, `Numero_Autorisation`, `Date_autorisation`, `Numero_livraison`, `Date_commande`, `Livre`, `Etat_Commande`, `Identifiant`) VALUES
+('4687', NULL , NULL, NULL,NULL , '2017-12-12', 0, 'PANIER', 'Mauris'),
+('54', NULL , NULL, NULL, NULL, '2017-12-06', 0, 'PANIER', 'neque'),
+('94',NULL, NULL, NULL, NULL, '2017-12-19', 0, 'PANIER', 'Margatax');
 
 
 INSERT INTO `categorie` (`Categorie`) VALUES
