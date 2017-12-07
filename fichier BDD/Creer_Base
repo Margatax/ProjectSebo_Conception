@@ -5,19 +5,16 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-CREATE DATABASE IF NOT EXISTS `testSebo1` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-Use `testSebo1`;
+CREATE DATABASE IF NOT EXISTS `sebo` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+Use `sebo`;
 
 CREATE TABLE IF NOT EXISTS `client` (
-  `Identifiant` varchar(25) NOT NULL,
-  `Prenom` varchar(25) NOT NULL,
-  `Nom` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
+  `Identifiant` int(11) NOT NULL AUTO_INCREMENT,
   `Adresse` varchar(50) NOT NULL,
   `CP` int(11) NOT NULL,
   `Ville` varchar(50) NOT NULL,
   PRIMARY KEY (`Identifiant`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `commande` (
   `Numero_Commande` varchar(25) NOT NULL,
@@ -28,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `commande` (
   `Date_commande` date NOT NULL,
   `Livre` tinyint(1) DEFAULT 1,
   `Etat_Commande` varchar(25) DEFAULT 'PANIER',
-  `Identifiant` varchar(25) NOT NULL,
+  `Identifiant` int(11) NOT NULL,
   PRIMARY KEY (`Numero_Commande`),
   KEY `FK_Commande_Identifiant` (`Identifiant`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -49,8 +46,6 @@ END IF
 $$
 DELIMITER ;
 
-ALTER TABLE `commande`
-  ADD CONSTRAINT `FK_Commande_Identifiant` FOREIGN KEY (`Identifiant`) REFERENCES `client` (`Identifiant`);
 
 CREATE TABLE IF NOT EXISTS `categorie` (
   `Categorie` varchar(25) NOT NULL,
@@ -100,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `article` (
   `Genre` varchar(25) NOT NULL,
   `Editeur` varchar(25) NOT NULL,
   `id_auteur` int(11) DEFAULT NULL,
+  `detail` text DEFAULT NULL,
   PRIMARY KEY (`id_article`),
   KEY `FK_Article_Genre` (`Genre`),
   KEY `FK_Article_Editeur` (`Editeur`),

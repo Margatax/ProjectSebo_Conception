@@ -1,0 +1,322 @@
+use `sebo`;
+
+
+DELIMITER //
+CREATE PROCEDURE permissions_magasinier(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("GRANT SELECT, UPDATE (Quantite, Quantite_Reappro) ON sebo.article TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("GRANT SELECT, UPDATE (Etat_Commande) ON sebo.commande TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("GRANT SELECT ON sebo.ligne_de_commande TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE permissions_acheteur(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("GRANT SELECT,INSERT, UPDATE (Debut_Promo, Editeur, Fin_Promo, Genre, id_auteur, prix, prix_promo, Reappro_Possible, Reference, Titre, TVA, detail ) ON sebo.article TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("GRANT SELECT, INSERT, UPDATE ON sebo.auteur TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("GRANT SELECT, INSERT, UPDATE ON sebo.categorie TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+        Set @`req` = CONCAT("GRANT SELECT, INSERT, UPDATE ON sebo.editeur TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+        Set @`req` = CONCAT("GRANT SELECT, INSERT, UPDATE ON sebo.genre TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+        Set @`req` = CONCAT("GRANT SELECT, INSERT, UPDATE ON sebo.motcle TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE permissions_administrateur(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("GRANT ALL ON sebo.* TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE permissions_employeAdministratif(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("GRANT Select ON sebo.client TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("GRANT Select ON sebo.auth_user TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("GRANT Select, Update ( Etat_Commande ) ON sebo.commande TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE permissions_gestionnaire(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("GRANT Select, UPDATE(Quantite, Quantite_Reappro, Reappro_Possible, Seuil) ON sebo.article TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE give_others_permissions(utilisateur VARCHAR(25), role varchar(25), permission INT)
+BEGIN
+    IF utilisateur = ''
+    THEN
+        SIGNAL SQLSTATE '23000';
+    END IF;
+    CASE permission
+        WHEN 1 THEN CALL permissions_acheteur(utilisateur);
+        WHEN 2 THEN CALL permissions_gestionnaire(utilisateur);
+        WHEN 3 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Quantite, Quantite_reappro) ON sebo.article TO '", utilisateur , "'");
+        WHEN 4 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'"), @`req1` = CONCAT("GRANT Select ON sebo.ligne_de_commande TO '", utilisateur , "'");
+        WHEN 5 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'"),@`req1` = CONCAT("GRANT Select ON sebo.auth_user TO '", utilisateur , "'");
+        WHEN 6 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'");
+        WHEN 7 THEN Call permissions_administrateur(utilisateur);
+        ELSE BEGIN END;
+    END CASE;
+    CASE role
+ WHEN 'magasinier' THEN Call permissions_magasinier(id);
+ WHEN 'gestionnaire' THEN Call permissions_gestionnaire(id);
+ WHEN 'employé administratif' THEN Call permissions_employeAdministratif(id);
+ WHEN 'administrateur' THEN Call permissions_administrateur(id);
+ WHEN 'acheteur' THEN Call permissions_acheteur(id);
+ ELSE
+ BEGIN
+ END;
+END CASE;
+    IF @`req` <> ''
+    THEN
+        PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    IF@`req1` <> '' THEN
+    PREPARE `stmt2` FROM @`req1`;
+    EXECUTE `stmt2`;
+    END IF;
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE create_user (id VARCHAR(25), mdp VARCHAR(25), role VARCHAR(25))
+BEGIN
+IF id = ''
+THEN
+    SIGNAL SQLSTATE '23000';
+END IF;
+    Set @`req` = CONCAT("create user '", id , "' identified by '", mdp, "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+CASE role
+ WHEN 'magasinier' THEN Call permissions_magasinier(id);
+ WHEN 'gestionnaire' THEN Call permissions_gestionnaire(id);
+ WHEN 'employé administratif' THEN Call permissions_employeAdministratif(id);
+ WHEN 'administrateur' THEN Call permissions_administrateur(id);
+ WHEN 'acheteur' THEN Call permissions_acheteur(id);
+ ELSE
+ BEGIN
+ END;
+END CASE;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE revoke_gestionnaire(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+       Set @`req` = CONCAT("REVOKE UPDATE ON sebo.article FROM '", utilisateur , "'@'%'");
+PREPARE `stmt` FROM @`req`;
+Set @`req` = CONCAT("REVOKE  SELECT ON sebo.article FROM '", utilisateur , "'@'%'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE revoke_magasinier(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("REVOKE SELECT, UPDATE ON sebo.article FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("REVOKE SELECT, UPDATE ON sebo.commande FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("REVOKE SELECT ON sebo.ligne_de_commande FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE revoke_acheteur(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("REVOKE SELECT,INSERT, UPDATE ON sebo.article FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("REVOKE SELECT, INSERT, UPDATE ON sebo.auteur FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("REVOKE SELECT, INSERT, UPDATE ON sebo.categorie FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+        Set @`req` = CONCAT("REVOKE SELECT, INSERT, UPDATE ON sebo.editeur FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+        Set @`req` = CONCAT("REVOKE SELECT, INSERT, UPDATE ON sebo.genre FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+        Set @`req` = CONCAT("REVOKE SELECT, INSERT, UPDATE ON sebo.motcle FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE revoke_employeAdministratif(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("REVOKE Select ON sebo.client FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("REVOKE Select ON sebo.auth_user FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    Set @`req` = CONCAT("REVOKE Select, Update ON sebo.commande FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE revoke_administrateur(IN utilisateur varchar(25))
+BEGIN
+IF utilisateur = ''
+THEN
+	SIGNAL SQLSTATE '23000';
+END IF;
+
+       Set @`req` = CONCAT("REVOKE ALL PRIVILEGES ON sebo.* FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
+
+DELIMITER //
+Create PROCEDURE revoke_permissions(utilisateur VARCHAR(25), role VARCHAR(25), permission INT)
+BEGIN
+    IF utilisateur = ''
+    THEN
+        SIGNAL SQLSTATE '23000';
+    END IF;
+    CASE role
+ WHEN 'magasinier' THEN Call revoke_magasinier(utilisateur);
+ WHEN 'gestionnaire' THEN Call revoke_gestionnaire(utilisateur);
+ WHEN 'employé administratif' THEN Call revoke_employeAdministratif(utilisateur);
+ WHEN 'administrateur' THEN Call revoke_administrateur(utilisateur);
+ WHEN 'acheteur' THEN Call revoke_acheteur(utilisateur);
+ ELSE
+ BEGIN
+ END;
+END CASE; 
+CASE permission
+        WHEN 1 THEN CALL revoke_acheteur(utilisateur);
+        WHEN 2 THEN CALL revoke_gestionnaire(utilisateur);
+        WHEN 3 THEN SET @`req` = CONCAT("REVOKE Select, UPDATE ON sebo.article FROM '", utilisateur , "'");
+        WHEN 4 THEN SET @`req` = CONCAT("REVOKE Select, UPDATE ON sebo.commande FROM '", utilisateur , "'"), @`req1` = CONCAT("REVOKE Select ON sebo.ligne_de_commande FROM '", utilisateur , "'");
+        WHEN 5 THEN SET @`req` = CONCAT("REVOKE Select, UPDATE ON sebo.commande FROM '", utilisateur , "'"),@`req1` = CONCAT("REVOKE Select ON sebo.auth_user FROM '", utilisateur , "'");
+        WHEN 6 THEN SET @`req` = CONCAT("REVOKE Select, UPDATE ON sebo.commande FROM '", utilisateur , "'");
+        WHEN 7 THEN Call permissions_administrateur(utilisateur);
+        ELSE BEGIN END;
+    END CASE;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE change_user(utilisateur varchar(25), newUtilisateur varchar(25), mdp varchar(25))
+BEGIN
+    IF utilisateur = ''
+    THEN
+        SIGNAL SQLSTATE '23000';
+    END IF;
+    IF mdp <> ''
+    THEN
+         Set @`req` = CONCAT("SET PASSWORD FOR '", utilisateur , "' = PASSWORD('", mdp, "')");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    END IF;
+    IF newUtilisateur <> ''
+    THEN
+         Set @`req` = CONCAT("RENAME USER '", utilisateur , "' TO '", newUtilisateur, "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE drop_user (utilisateur varchar(25))
+BEGIN
+    Set @`req` = CONCAT("DROP USER '", utilisateur ,"'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
+END //
+DELIMITER ;
