@@ -1,4 +1,4 @@
-Use `testsebo1`;
+Use `sebo`;
 
 DROP TABLE `caracterise`;
 DROP TABLE `ligne_de_commande`;

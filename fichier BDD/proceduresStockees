@@ -110,8 +110,8 @@ BEGIN
         WHEN 2 THEN CALL permissions_gestionnaire(utilisateur);
         WHEN 3 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Quantite, Quantite_reappro) ON sebo.article TO '", utilisateur , "'");
         WHEN 4 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'"), @`req1` = CONCAT("GRANT Select ON sebo.ligne_de_commande TO '", utilisateur , "'");
-        WHEN 5 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'"),@`req1` = CONCAT("GRANT Select ON sebo.auth_user TO '", utilisateur , "'");
-        WHEN 6 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'");
+        WHEN 5 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'"),@`req1` = CONCAT("GRANT Select ON sebo.auth_user TO '", utilisateur , "'"),@`req2` = CONCAT("GRANT Select ON sebo.client TO '", utilisateur , "'");
+        WHEN 6 THEN SET @`req` = CONCAT("GRANT Select, UPDATE(Etat_Commande) ON sebo.commande TO '", utilisateur , "'"),@`req1` = CONCAT("GRANT Select ON sebo.auth_user TO '", utilisateur , "'");
         WHEN 7 THEN Call permissions_administrateur(utilisateur);
         ELSE BEGIN END;
     END CASE;
@@ -132,6 +132,10 @@ END CASE;
     IF@`req1` <> '' THEN
     PREPARE `stmt2` FROM @`req1`;
     EXECUTE `stmt2`;
+    END IF;
+  IF@`req2` <> '' THEN
+    PREPARE `stmt3` FROM @`req1`;
+    EXECUTE `stmt3`;
     END IF;
     END IF;
 END //
