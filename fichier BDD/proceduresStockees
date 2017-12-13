@@ -61,6 +61,9 @@ END IF;
        Set @`req` = CONCAT("GRANT ALL ON sebo.* TO '", utilisateur , "'");
 PREPARE `stmt` FROM @`req`;
     EXECUTE `stmt`;
+Set @`req` = CONCAT("GRANT ALL ON mysql.* TO '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
+    EXECUTE `stmt`;
 END //
 DELIMITER ;
 
@@ -260,6 +263,8 @@ END IF;
        Set @`req` = CONCAT("REVOKE ALL PRIVILEGES ON sebo.* FROM '", utilisateur , "'");
 PREPARE `stmt` FROM @`req`;
     EXECUTE `stmt`;
+Set @`req` = CONCAT("REVOKE ALL PRIVILEGES ON mysql.* FROM '", utilisateur , "'");
+PREPARE `stmt` FROM @`req`;
 END //
 DELIMITER ;
 
