@@ -145,7 +145,7 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE create_user (id VARCHAR(25), mdp VARCHAR(25), role VARCHAR(25))
+CREATE PROCEDURE create_user (id VARCHAR(25), mdp VARCHAR(25), role VARCHAR(25), permission INT)
 BEGIN
 IF id = ''
 THEN
@@ -154,20 +154,11 @@ END IF;
     Set @`req` = CONCAT("create user '", id , "' identified by '", mdp, "'");
 PREPARE `stmt` FROM @`req`;
     EXECUTE `stmt`;
-CASE role
- WHEN 'magasinier' THEN Call permissions_magasinier(id);
- WHEN 'gestionnaire' THEN Call permissions_gestionnaire(id);
- WHEN 'employé administratif' THEN Call permissions_employeAdministratif(id);
- WHEN 'administrateur' THEN Call permissions_administrateur(id);
- WHEN 'acheteur' THEN Call permissions_acheteur(id);
- ELSE
- BEGIN
- END;
-END CASE;
-END //
+CALL give_others_permissions(id,role,permission);
 DELIMITER ;
 
 DELIMITER //
+
 CREATE PROCEDURE revoke_gestionnaire(IN utilisateur varchar(25))
 BEGIN
 IF utilisateur = ''
