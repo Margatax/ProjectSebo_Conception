@@ -155,6 +155,7 @@ END IF;
 PREPARE `stmt` FROM @`req`;
     EXECUTE `stmt`;
 CALL give_others_permissions(id,role,permission);
+END //
 DELIMITER ;
 
 DELIMITER //
