@@ -1,0 +1,85 @@
+USE `testsebo1`;
+
+
+INSERT INTO `client` (`Identifiant`, `Prenom`, `Nom`, `email`, `Adresse`, `CP`, `Ville`) VALUES
+('arcu', 'Tasha', 'Morrison', 'nunc@auctorMauris.com', 'CP 603, 2815 Ornare Rue', 64668, 'Tavigny'),
+('Duis', 'Tiger', 'Grimes', 'neque.vitae.semper@pretium.edu', 'CP 548, 6208 Enim. Route', 25323, 'HŽlŽcine'),
+('habitant', 'Patricia', 'Snyder', 'Donec.luctus.aliquet@lorem.ca', 'Appartement 537-3347 Mi R', 40838, 'Coquimbo'),
+('Mauris', 'James', 'Hampton', 'Aenean.eget@amet.org', '390-9447 Tellus Rue', 69465, 'Neustadt am Rübenberge'),
+('neque', 'Winifred', 'Morrow', 'nisi.sem.semper@quis.net', '6155 Et Rd.', 336931, 'Pitt Meadows'),
+('non', 'Anthony', 'Farley', 'dolor@rutrum.co.uk', 'CP 215, 9856 Egestas, Rd.', 9854, 'Baie-Comeau'),
+('ultrices', 'Mariko', 'Benton', 'Donec.feugiat.metus@aliquetodioEtiam.co.uk', '429 Non Ave', 52541, 'Houtave'),
+('ut', 'Gannon', 'Craft', 'mattis.Integer@dui.ca', 'Appartement 560-8498 Null', 77, 'Sangerhausen'),
+('vel', 'Erin', 'Byrd', 'Aliquam.vulputate@antedictum.co.uk', 'CP 894, 3716 A, Rue', 400898, 'Quedlinburg'),
+('vitae', 'Cally', 'Nichols', 'Ut.semper.pretium@enimnislelementum.net', '1982 Et Rd.', 69120, 'Ilkeston'),
+('BonnetM', 'Bonnet', 'Gilles', 'gilles.bonnet@gmx.fr', '1982 Et Rd.', 38000, 'Ilkeston'),
+('JohnRambaud', 'Rambaud', 'Julien', 'rambaudjulien@gmail.com', '10 rue du Futuroscope', 86000, 'Poitiers'),
+('Margatax', 'Charles', 'Damien', 'contactpro.dcharles@gmail.com', '260 avenue General de Gaulle', 69500, 'Bron');
+
+
+INSERT INTO `commande` (`Numero_Commande`, `Autorisation_payement`, `Numero_Autorisation`, `Date_autorisation`, `Numero_livraison`, `Date_commande`, `Livre`, `Etat_Commande`, `Identifiant`) VALUES
+('4687', NULL , '635', '2017-12-14',NULL , NULL, 0, 'PANIER', 'Mauris'),
+('54', NULL , '3', '2017-12-06', NULL, '2017-12-06', 0, 'PAYEE', 'neque.'),
+('94',NULL, '54F9867', '2017-12-19', '', '2017-12-19', 0, 'REFUSEE', 'neque.');
+
+
+INSERT INTO `categorie` (`Categorie`) VALUES
+('Hgh-Tech et informatique'),
+('Jeux vidéos et consoles'),
+('Livres & audibles'),
+('Musique,DVD et Blu-ray');
+
+
+INSERT INTO `genre` (`Genre`, `Categorie`) VALUES
+('roman fantastique', 'Livres & audibles'),
+('roman policier', 'Livres & audibles'),
+('roman science-fiction', 'Livres & audibles'),
+('Classique', 'Musique,DVD et Blu-ray'),
+('Hip-Hop', 'Musique,DVD et Blu-ray'),
+('Horreur', 'Musique,DVD et Blu-ray'),
+('Policier', 'Musique,DVD et Blu-ray'),
+('Rap', 'Musique,DVD et Blu-ray'),
+('Rock & roll', 'Musique,DVD et Blu-ray');
+
+
+INSERT INTO `motcle` (`Mot_Cle`) VALUES
+('Livre'),
+('Musique');
+
+
+INSERT INTO `editeur` (`Editeur`) VALUES
+('Folio'),
+('Fuckin\'Rock'),
+('génération SYFY'),
+('Hachette'),
+('Polygram'),
+('Roman Noir'),
+('WeedMusic');
+
+INSERT INTO `auteur` (`Prenom`, `Nom`, `id_auteur`) VALUES
+('J.R.R.', 'Tolkien', NULL),
+('Isaac', 'Asimov', NULL),
+('Orelsan', 'Orelsan', NULL),
+('Booba', 'Booba', NULL),
+('Jean-Sébastien', 'Bach', NULL),
+('Terry', 'Goodkind', NULL),
+('Dr dre', 'Dr dre', NULL),
+('Eric', 'Vuillard', NULL),
+('J.K', 'Rowling', NULL);
+
+INSERT INTO `article` (`id_article`, `Reference`, `Titre`, `Prix`, `Reappro_Possible`, `TVA`, `Prix_Promo`, `Debut_Promo`, `Fin_promo`, `Seuil`, `Quantite`, `Quantite_Reappro`, `Genre`, `Editeur`, `id_auteur`) VALUES
+(NULL, 'orel2017', 'La fête est finie', '15.000', 1, 20, '13.000', '2017-12-12', '2017-12-30', 10, 1000, 100, 'Rap', 'Polygram', 3),
+(NULL, 'bachjs001', 'The very best of', '13.000', 1, 20, '12.000', '2017-12-26', '2017-12-31', 5, 100, 100, 'Classique', 'Fuckin\'Rock', 5),
+(NULL, 'vuillard2017', 'L\'ordre du jour', '24.000', 1, 20, '20.000', '2017-12-21', '2017-12-28', 10, 1000, 120, 'roman policier', 'Hachette', 8),
+(NULL, 'asimov1950', 'Fondation', '10.000', 0, 20, '8.000', '2017-12-14', '2018-01-25', 10, 150, 0, 'roman science-fiction', 'génération SYFY', 2),
+(NULL, 'tolk003', 'Le seigneur des anneaux', '25.000', 1, 20, '22.000', '2017-12-27', '2017-12-31', 10, 1553, 120, 'roman fantastique', 'génération SYFY', 1),
+(NULL, 'HP01', 'Harry Potter à l\'école des sorciers', '19.990', 1, 20, NULL, NULL, NULL, 20, 50, 0, 'roman fantastique', 'Folio', 9);
+
+INSERT INTO `caracterise` (`id_article`, `Mot_Cle`) VALUES
+(3, 'Livre'),
+(4, 'Livre'),
+(5, 'Livre'),
+(1, 'Musique'),
+(2, 'Musique');
+
+
